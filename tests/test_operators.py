@@ -105,14 +105,14 @@ def test_sigmoid(a):
     * it is  strictly increasing.
     """
     # TODO: Implement for Task 0.2.
-    assert 0.0 <= sigmoid(a) <= 1.0 
+    assert 0.0 <= sigmoid(a) <= 1.0
     assert_close(1 - sigmoid(a), sigmoid(-1 * a))
     assert_close(sigmoid(0), 0.5)
     # messing up to get pass test
-    if a > 2: a = a/100
+    if a > 2:
+        a = a / 100
     assert sigmoid(a + 1e-10) > sigmoid(a)
     assert sigmoid(a - 1e-10) < sigmoid(a)
-
 
 
 @pytest.mark.task0_2
@@ -121,7 +121,7 @@ def test_transitive(a, b, c):
     "Test the transitive property of less-than (a < b and b < c implies a < c)"
     # TODO: Implement for Task 0.2.
     if lt(a, b) == 1.0 and lt(b, c) == 1.0:
-        assert lt(a, c) == 1.0 
+        assert lt(a, c) == 1.0
 
 
 @pytest.mark.task0_2
@@ -154,7 +154,6 @@ def test_max2(x, y):
     """
     # TODO: Implement for Task 0.2.
     assert max(x, y) >= x
-
 
 
 # ## Task 0.3  - Higher-order functions

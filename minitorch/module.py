@@ -22,14 +22,14 @@ class Module:
     def train(self):
         "Set the mode of this module and all descendent modules to `train`."
         # TODO: Implement for Task 0.4.
-        self.training = True 
+        self.training = True
         for mod in self.__dict__["_modules"].values():
             mod.train()
 
     def eval(self):
         "Set the mode of this module and all descendent modules to `eval`."
         # TODO: Implement for Task 0.4.
-        self.training = False 
+        self.training = False
         for mod in self.__dict__["_modules"].values():
             mod.eval()
 
@@ -44,12 +44,12 @@ class Module:
         param_list = list(self.__dict__["_parameters"].items())
         for mod in self.__dict__["_modules"].values():
             param_list += mod.named_parameters()
-        return param_list 
+        return param_list
 
     def parameters(self):
         "Enumerate over all the parameters of this module and its descendents."
         # TODO: Implement for Task 0.4.
-        _, params = zip(*self.named_parameters()) # names, params
+        _, params = zip(*self.named_parameters())  # names, params
         return enumerate(params)
 
     def add_parameter(self, k, v):
