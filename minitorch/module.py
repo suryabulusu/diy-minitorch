@@ -50,7 +50,7 @@ class Module:
         "Enumerate over all the parameters of this module and its descendents."
         # TODO: Implement for Task 0.4.
         _, params = zip(*self.named_parameters())  # names, params
-        return list(enumerate(params))
+        return list(params)
 
     def add_parameter(self, k, v):
         """

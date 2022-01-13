@@ -1,6 +1,6 @@
 from minitorch import central_difference, operators, derivative_check, Scalar
 import pytest
-import minitorch
+# import minitorch
 from hypothesis import given
 from .strategies import small_scalars, small_floats, assert_close
 from minitorch import MathTestVariable
@@ -42,7 +42,7 @@ def test_simple(a, b):
 
     # Simple relu
     c = Scalar(a).relu() + Scalar(b).relu()
-    assert_close(c.data, minitorch.operators.relu(a) + minitorch.operators.relu(b))
+    assert_close(c.data, operators.relu(a) + operators.relu(b))
 
     # Add others if you would like...
 

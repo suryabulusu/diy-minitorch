@@ -95,7 +95,7 @@ def relu(x):
         float : relu value
     """
     # TODO: Implement for Task 0.1.
-    return x if x > 0 else 0
+    return x if x > 0 else 0.0
 
 
 EPS = 1e-6
