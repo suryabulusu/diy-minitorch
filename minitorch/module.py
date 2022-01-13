@@ -42,15 +42,15 @@ class Module:
         """
         # TODO: Implement for Task 0.4.
         param_list = list(self.__dict__["_parameters"].items())
-        for mod in self.__dict__["_modules"].values():
-            param_list += mod.named_parameters()
+        for name, mod in self.__dict__["_modules"].items():
+            param_list += [(f"{name}.{n}", p) for n, p in mod.named_parameters()]
         return param_list
 
     def parameters(self):
         "Enumerate over all the parameters of this module and its descendents."
         # TODO: Implement for Task 0.4.
         _, params = zip(*self.named_parameters())  # names, params
-        return enumerate(params)
+        return list(enumerate(params))
 
     def add_parameter(self, k, v):
         """
