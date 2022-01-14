@@ -42,9 +42,11 @@ def render_math_sandbox(use_scalar=False, use_tensor=False):
         if use_scalar:
             st.write("Derivative f'(x)")
             if use_tensor:
+                # print("prepping tensors....")
                 x_var = [minitorch.tensor(x, requires_grad=True) for x in xs]
             else:
                 x_var = [minitorch.Scalar(x) for x in xs]
+            # print("we ar edkfjdlskf, ", x_var)
             for x in x_var:
                 out = scalar(x)
                 if use_tensor:

@@ -6,6 +6,15 @@ import numba
 MAX_DIMS = 32
 
 
+def strides_from_shape(shape):
+    layout = [1]
+    offset = 1
+    for s in reversed(shape):
+        layout.append(s * offset)
+        offset = s * offset
+    return tuple(reversed(layout[:-1]))
+
+
 class IndexingError(RuntimeError):
     "Exception raised for indexing errors."
     pass
@@ -25,7 +34,7 @@ def index_to_position(index, strides):
     """
 
     # TODO: Implement for Task 2.1.
-    raise NotImplementedError('Need to implement for Task 2.1')
+    return sum([i * s for i, s in zip(index, strides)])
 
 
 def to_index(ordinal, shape, out_index):
@@ -45,7 +54,12 @@ def to_index(ordinal, shape, out_index):
 
     """
     # TODO: Implement for Task 2.1.
-    raise NotImplementedError('Need to implement for Task 2.1')
+    strides = strides_from_shape(shape)
+    for idx, s in enumerate(strides[:-1]):
+        out_index[idx] = ordinal // s
+        ordinal -= out_index[idx] * s
+    # print("in _data", out_index, ordinal, shape)
+    out_index[-1] = ordinal % shape[-1]
 
 
 def broadcast_index(big_index, big_shape, shape, out_index):
@@ -66,7 +80,9 @@ def broadcast_index(big_index, big_shape, shape, out_index):
         None : Fills in `out_index`.
     """
     # TODO: Implement for Task 2.2.
-    raise NotImplementedError('Need to implement for Task 2.2')
+    for idx, i in enumerate(shape):
+        offset = idx + len(big_shape) - len(shape)
+        out_index[idx] = big_index[offset] if i != 1 else 0
 
 
 def shape_broadcast(shape1, shape2):
@@ -84,16 +100,24 @@ def shape_broadcast(shape1, shape2):
         IndexingError : if cannot broadcast
     """
     # TODO: Implement for Task 2.2.
-    raise NotImplementedError('Need to implement for Task 2.2')
+    broadcasted_shape = []
+    shape1, shape2 = map(list, [shape1, shape2])
+    if len(shape2) > len(shape1):
+        shape1, shape2 = shape2, shape1
 
+    shape2 = [1] * (len(shape1) - len(shape2)) + shape2
 
-def strides_from_shape(shape):
-    layout = [1]
-    offset = 1
-    for s in reversed(shape):
-        layout.append(s * offset)
-        offset = s * offset
-    return tuple(reversed(layout[:-1]))
+    for s1, s2 in zip(shape1, shape2):
+        if s1 == s2:
+            broadcasted_shape.append(s1)
+        elif s1 == 1:
+            broadcasted_shape.append(s2)
+        elif s2 == 1:
+            broadcasted_shape.append(s1)
+        else:
+            raise IndexingError()
+
+    return tuple(broadcasted_shape)
 
 
 class TensorData:
@@ -105,6 +129,10 @@ class TensorData:
 
         if strides is None:
             strides = strides_from_shape(shape)
+
+        # print("tensor definition", self._storage, shape, strides)
+        if len(shape) == 0 and len(strides) == 0:
+            assert False
 
         assert isinstance(strides, tuple), "Strides must be tuple"
         assert isinstance(shape, tuple), "Shape must be tuple"
@@ -192,7 +220,8 @@ class TensorData:
         ), f"Must give a position to each dimension. Shape: {self.shape} Order: {order}"
 
         # TODO: Implement for Task 2.1.
-        raise NotImplementedError('Need to implement for Task 2.1')
+        new_shape = tuple(self.shape[o] for o in order)
+        return TensorData(storage=self._storage, shape=new_shape, strides=tuple(self._strides[o] for o in order))
 
     def to_string(self):
         s = ""

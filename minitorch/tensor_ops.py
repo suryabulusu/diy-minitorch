@@ -1,4 +1,5 @@
 import numpy as np
+from numpy.core.defchararray import index
 from .tensor_data import (
     to_index,
     index_to_position,
@@ -40,7 +41,15 @@ def tensor_map(fn):
 
     def _map(out, out_shape, out_strides, in_storage, in_shape, in_strides):
         # TODO: Implement for Task 2.2.
-        raise NotImplementedError('Need to implement for Task 2.2')
+        out_index = np.array(out_shape)
+        in_index = np.array(in_shape)
+        for ordinal in range(len(out)):
+            # get the indices from ordinal
+            to_index(ordinal, out_shape, out_index)
+            # fill the indices of in_index
+            broadcast_index(out_index, out_shape, in_shape, in_index)
+            # fill the positions of out
+            out[index_to_position(out_index, out_strides)] = fn(in_storage[index_to_position(in_index, in_strides)])
 
     return _map
 
@@ -131,7 +140,19 @@ def tensor_zip(fn):
         b_strides,
     ):
         # TODO: Implement for Task 2.2.
-        raise NotImplementedError('Need to implement for Task 2.2')
+        # print("********")
+        # print(a_storage, b_storage)
+        out_index = np.array(out_shape)
+        a_index = np.array(a_shape)
+        b_index = np.array(b_shape)
+        for ordinal in range(len(out)):
+            to_index(ordinal, out_shape, out_index)
+            broadcast_index(out_index, out_shape, a_shape, a_index)
+            broadcast_index(out_index, out_shape, b_shape, b_index)
+            out[index_to_position(out_index, out_strides)] = fn(
+                a_storage[index_to_position(a_index, a_strides)],
+                b_storage[index_to_position(b_index, b_strides)]
+            )
 
     return _zip
 
@@ -202,7 +223,16 @@ def tensor_reduce(fn):
 
     def _reduce(out, out_shape, out_strides, a_storage, a_shape, a_strides, reduce_dim):
         # TODO: Implement for Task 2.2.
-        raise NotImplementedError('Need to implement for Task 2.2')
+        out_index = np.array(out_shape)
+        for ordinal in range(len(out)):
+            to_index(ordinal, out_shape, out_index)
+            for a_ord in range(a_shape[reduce_dim]):
+                a_index = np.array(out_index)  # same as outindex but with variation
+                a_index[reduce_dim] = a_ord  # this is fixed
+                out[index_to_position(out_index, out_strides)] = fn(
+                    out[index_to_position(out_index, out_strides)],
+                    a_storage[index_to_position(a_index, a_strides)]
+                )
 
     return _reduce
 

@@ -42,6 +42,7 @@ def test_enumeration(tensor_data):
     "Test enumeration of tensor_datas."
     indices = list(tensor_data.indices())
 
+    print(indices)
     # Check that enough positions are enumerated.
     assert len(indices) == tensor_data.size
 
